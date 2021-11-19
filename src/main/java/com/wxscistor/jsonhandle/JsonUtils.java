@@ -8,9 +8,11 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author liqijian
@@ -49,10 +51,12 @@ public class JsonUtils {
         List<JSONObject> jsonObjectList = new ArrayList<>();
         if(object instanceof JSONObject){
             jsonObjectList.add((JSONObject)object);
-        }else if (object instanceof String || object instanceof Integer || object instanceof ArrayList) {
+        }else if (object instanceof String || object instanceof Integer ||
+                object instanceof ArrayList || object instanceof Long ||
+                object instanceof BigDecimal || object instanceof Boolean) {
             sb.append(object).append(split);
         }else{
-            JSONArray retArray = (JSONArray)object;
+            JSONArray retArray = (JSONArray)(Objects.requireNonNull(object));
             retArray.forEach(retObject->{
                 if (retObject instanceof JSONObject){
                     jsonObjectList.add((JSONObject) retObject);
@@ -69,11 +73,16 @@ public class JsonUtils {
             Iterator<String> keys = retJson.keys();
             while (keys.hasNext()){
                 String key = String.valueOf(keys.next());
-                String value = retJson.get(key).toString();
+                String value = "null".equals(retJson.get(key).toString()) || "".equals(retJson.get(key).toString()) ?
+                        "\"key\": \"\"" : retJson.get(key).toString();
                 List<JSONObject> cacheObjectList = getJsonObjects(value, split);
                 newJsonObjectList.addAll(cacheObjectList);
             }
         });
         return newJsonObjectList;
+    }
+
+    public static void main(String[] args) {
+        getJsonObjects("{}", ",");
     }
 }
