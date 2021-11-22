@@ -48,7 +48,6 @@ public class JsonUtils {
      */
     public static List<JSONObject> getJsonObjects(String str, String split){
         Object object = new JSONTokener(str).nextValue();
-        System.out.println("JSON内容是 :   "+str);
         List<JSONObject> jsonObjectList = new ArrayList<>();
         if(object instanceof JSONObject){
             jsonObjectList.add((JSONObject)object);
@@ -56,7 +55,6 @@ public class JsonUtils {
                 object instanceof ArrayList || object instanceof Long ||
                 object instanceof BigDecimal || object instanceof Boolean) {
             sb.append(object).append(split);
-            System.out.println(object.toString());
         }else{
             JSONArray retArray = (JSONArray)(Objects.requireNonNull(object));
             retArray.forEach(retObject->{
@@ -64,7 +62,6 @@ public class JsonUtils {
                     jsonObjectList.add((JSONObject) retObject);
                 }else{
                     sb.append(retObject).append(split);
-                    System.out.println(retObject.toString());
                 }
             });
         }
